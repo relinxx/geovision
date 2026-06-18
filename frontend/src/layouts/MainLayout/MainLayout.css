@@ -1,0 +1,16 @@
+/**
+ * MainLayout Styles
+ * =================
+ * Root application layout with sidebar navigation.
+ * Provides the main container structure for the GeoVision application.
+ */
+
+.main-layout {
+  /* Full viewport coverage with flex layout */
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  display: flex;
+  overflow: hidden;
+}

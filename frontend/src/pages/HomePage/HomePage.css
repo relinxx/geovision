@@ -1,0 +1,137 @@
+/**
+ * HomePage Styles
+ * ===============
+ * Main dashboard page with parcel selection, map visualization,
+ * and spatial planning controls.
+ */
+
+@import '../../styles/tokens.css';
+@import '../../styles/design-system.css';
+
+/* Main page container */
+.home-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Three-column layout wrapper */
+.home-page__layout {
+  flex: 1;
+  display: flex;
+  gap: var(--space-4);
+  height: 100%;
+}
+
+/* Main content area (center) */
+.main-content {
+  flex: 1;
+  min-width: 0; /* Allow shrinking below content size */
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.main-content__header {
+  flex-shrink: 0;
+  margin-bottom: var(--space-1);
+}
+
+.main-content__title {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.main-content__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+/* Map wrapper */
+.map-wrapper {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Ensure map controls are visible */
+.map-wrapper .deckgl-view-controls,
+.map-wrapper .deckgl-legend {
+  pointer-events: auto;
+}
+
+/* ============================================
+   RESPONSIVE MEDIA QUERIES
+   ============================================ */
+
+/* Mobile and Small Tablet (≤ 768px) - Stack layout, full width sidebars */
+@media (max-width: 768px) {
+  .home-page__layout {
+    flex-direction: column;
+    gap: var(--space-3);
+    overflow-y: auto;
+  }
+  
+  .main-content {
+    padding: var(--space-3);
+    min-height: 350px;
+    order: -1; /* Move main content to top */
+  }
+  
+  .main-content__title {
+    font-size: var(--font-size-base);
+  }
+  
+  .main-content__description {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-3);
+  }
+  
+  .map-wrapper {
+    min-height: 250px;
+  }
+}
+
+/* Tablet (641px - 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .home-page__layout {
+    gap: var(--space-2);
+  }
+  
+  .main-content {
+    padding: var(--space-3);
+    min-width: 0;
+  }
+}
+
+/* Small Tablet (768px - 1024px) - Sidebars get smaller */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .home-page__layout {
+    gap: var(--space-2);
+  }
+}
+
+/* Desktop (≥ 1025px) */
+@media (min-width: 1025px) {
+  .home-page__layout {
+    gap: var(--space-4);
+  }
+}
+
+/* Large Desktop (≥ 1280px) */
+@media (min-width: 1280px) {
+  .main-content__title {
+    font-size: var(--font-size-xl);
+  }
+}

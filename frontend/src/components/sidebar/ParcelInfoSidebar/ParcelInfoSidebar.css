@@ -1,0 +1,601 @@
+/**
+ * ParcelInfoSidebar Styles
+ * ========================
+ * Right sidebar displaying detailed information about the selected parcel.
+ * Shows risk scores, environmental hazards, and parcel properties.
+ */
+
+@import '../../../styles/tokens.css';
+
+/* Main sidebar container */
+.parcel-info-sidebar {
+  width: 24rem; /* 384px */
+  min-width: 320px;
+  max-width: 384px;
+  background-color: var(--color-bg-secondary);
+  border-left: 1px solid var(--color-border-primary);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.parcel-info-sidebar__content {
+  padding: var(--space-6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .parcel-info-sidebar {
+    width: 300px;
+    min-width: 280px;
+    max-width: 300px;
+  }
+  
+  .parcel-info-sidebar__content {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .parcel-info-sidebar {
+    width: 100%;
+    min-width: auto;
+    max-width: none;
+    border-left: none;
+    border-top: 1px solid var(--color-border-primary);
+    max-height: 40vh;
+    min-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .parcel-info-sidebar__content {
+    padding: var(--space-3);
+  }
+  
+  /* Make empty state more compact on mobile */
+  .empty-state__icon-container {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  
+  .empty-state__icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
+
+/* Empty state container */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.empty-state__content {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.empty-state__icon-container {
+  width: 5rem;
+  height: 5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+}
+
+.empty-state__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--color-border-primary);
+}
+
+.empty-state__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Sidebar section */
+.sidebar-section {
+  margin-bottom: var(--space-6);
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Header tile (parcel info header) */
+.header-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-primary) 100%);
+  border: 1px solid var(--color-border-primary);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+}
+
+.header-tile__glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8rem;
+  height: 8rem;
+  /*background-color: rgba(79, 255, 167, 0.05);*/
+  border-radius: var(--radius-full);
+  margin-top: -4rem;
+  margin-right: -4rem;
+}
+
+.header-tile__content {
+  position: relative;
+}
+
+.header-tile__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.header-tile__icon-container {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-xl);
+  background-color: rgba(79, 255, 167, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-tile__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-accent-primary);
+}
+
+.header-tile__title-group {
+  flex: 1;
+}
+
+.header-tile__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.header-tile__subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* APN display box */
+.apn-box {
+  margin-top: var(--space-4);
+}
+
+.apn-box__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.apn-box__value {
+  font-size: var(--font-size-2xl);
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent-secondary);
+  background-color: var(--color-bg-secondary);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(59, 199, 245, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+/* Section headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.section-header__icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-accent-primary);
+}
+
+.section-header__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-primary);
+}
+
+/* Risk score tiles grid */
+.risk-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+/* Individual risk tile */
+.risk-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  padding: var(--space-4);
+  transition: transform var(--transition-fast);
+}
+
+.risk-tile:hover {
+  transform: scale(1.02);
+}
+
+.risk-tile__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.risk-tile__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.risk-tile__value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.risk-tile__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+/* Progress bar */
+.risk-bar {
+  margin-top: var(--space-2);
+  height: 0.375rem;
+  background-color: var(--color-border-primary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.risk-bar__fill {
+  height: 100%;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-full);
+}
+
+/* Risk level color classes */
+.risk-low {
+  background-color: rgba(22, 101, 52, 0.2);
+  border-color: var(--color-border-primary);
+}
+
+.risk-low .risk-tile__icon,
+.risk-low .risk-tile__value {
+  color: var(--color-risk-low);
+}
+
+.risk-low .risk-bar__fill {
+  background-color: var(--color-risk-low);
+}
+
+.risk-moderate {
+  background-color: rgba(74, 222, 128, 0.2);
+  border-color: var(--color-border-primary);
+}
+
+.risk-moderate .risk-tile__icon,
+.risk-moderate .risk-tile__value {
+  color: var(--color-risk-moderate);
+}
+
+.risk-moderate .risk-bar__fill {
+  background-color: var(--color-risk-moderate);
+}
+
+.risk-elevated {
+  background-color: rgba(234, 179, 8, 0.2);
+  border-color: var(--color-border-primary);
+}
+
+.risk-elevated .risk-tile__icon,
+.risk-elevated .risk-tile__value {
+  color: var(--color-risk-elevated);
+}
+
+.risk-elevated .risk-bar__fill {
+  background-color: var(--color-risk-elevated);
+}
+
+.risk-high {
+  background-color: rgba(249, 115, 22, 0.2);
+  border-color: var(--color-border-primary);
+}
+
+.risk-high .risk-tile__icon,
+.risk-high .risk-tile__value {
+  color: var(--color-risk-high);
+}
+
+.risk-high .risk-bar__fill {
+  background-color: var(--color-risk-high);
+}
+
+.risk-critical {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.risk-critical .risk-tile__icon,
+.risk-critical .risk-tile__value {
+  color: var(--color-risk-critical);
+}
+
+.risk-critical .risk-bar__fill {
+  background-color: var(--color-risk-critical);
+}
+
+/* Environmental hazards grid */
+.hazards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+/* Hazard tile */
+.hazard-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-tertiary);
+  padding: var(--space-4);
+  transition: transform var(--transition-fast);
+}
+
+.hazard-tile:hover {
+  transform: scale(1.02);
+}
+
+/* Hazard states */
+.hazard-tile--positive {
+  background-color: rgba(59, 199, 245, 0.1);
+  border-color: rgba(59, 199, 245, 0.3);
+}
+
+.hazard-tile--negative {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.hazard-tile__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.hazard-tile__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.hazard-tile__icon--muted {
+  color: var(--color-text-muted);
+}
+
+.hazard-tile__icon--positive {
+  color: var(--color-accent-secondary);
+}
+
+.hazard-tile__icon--negative {
+  color: var(--color-error);
+}
+
+.hazard-tile__status-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.hazard-tile__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.hazard-tile__value {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.hazard-tile__value--positive {
+  color: var(--color-accent-primary);
+}
+
+.hazard-tile__value--negative {
+  color: var(--color-error);
+}
+
+.hazard-tile__value--muted {
+  color: var(--color-text-tertiary);
+}
+
+/* Unknown state styling */
+.unknown-state {
+  color: var(--color-text-muted);
+  background-color: rgba(26, 47, 77, 0.5);
+}
+
+.assignment-explanation-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  background: linear-gradient(180deg, rgba(11, 30, 57, 0.95) 0%, rgba(6, 18, 42, 0.9) 100%);
+  padding: var(--space-4);
+}
+
+.assignment-explanation-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.assignment-explanation-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-full);
+  background-color: rgba(79, 255, 167, 0.12);
+  border: 1px solid rgba(79, 255, 167, 0.28);
+  color: var(--color-accent-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.assignment-explanation-risk {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-transform: capitalize;
+}
+
+.assignment-explanation-card__headline {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
+}
+
+.assignment-explanation-card__state {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.assignment-explanation-card__warning {
+  color: #ffb4b4;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.assignment-score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.assignment-score-item {
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(59, 199, 245, 0.18);
+  background-color: rgba(59, 199, 245, 0.06);
+  padding: var(--space-3);
+}
+
+.assignment-score-item__label {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--space-1);
+}
+
+.assignment-score-item__value {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.assignment-score-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.assignment-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.assignment-score-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.assignment-score-row__label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.assignment-score-row__value {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.assignment-detail-group + .assignment-detail-group {
+  margin-top: var(--space-4);
+}
+
+.assignment-detail-group__title {
+  color: var(--color-accent-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.assignment-detail-group__title--warning {
+  color: #ffb4b4;
+}
+
+.assignment-detail-list {
+  margin: 0;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.assignment-detail-list--warning {
+  color: #ffd4d4;
+}

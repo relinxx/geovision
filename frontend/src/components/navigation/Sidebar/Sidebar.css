@@ -1,0 +1,117 @@
+/**
+ * Sidebar Navigation Styles
+ * ========================
+ * Vertical navigation sidebar with icon buttons.
+ * Provides main application view switching.
+ */
+
+@import '../../../styles/tokens.css';
+
+/* Main sidebar container */
+.sidebar {
+  width: 5rem; /* 80px */
+  background-color: var(--color-bg-tertiary);
+  border-right: 1px solid var(--color-border-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6) 0;
+  gap: var(--space-4);
+}
+
+/* Navigation items container */
+.sidebar-nav-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+/* Logout button */
+.sidebar-nav-btn--logout {
+  margin-top: auto;
+  border-top: 1px solid var(--color-border-primary);
+  padding-top: var(--space-4);
+  border-radius: 0;
+}
+
+.sidebar-nav-btn--logout:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  box-shadow: none;
+}
+
+.sidebar-nav-btn--logout:hover .sidebar-nav-btn__icon {
+  color: var(--color-error);
+}
+
+/* Navigation button */
+.sidebar-nav-btn {
+  position: relative;
+  width: 3.5rem; /* 56px */
+  height: 3.5rem;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Hover state for inactive buttons */
+.sidebar-nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(59, 199, 245, 0.3);
+  box-shadow: 0 0 15px rgba(59, 199, 245, 0.15);
+}
+
+/* Active state */
+.sidebar-nav-btn--active {
+  background: linear-gradient(135deg, rgba(79, 255, 167, 0.12) 0%, rgba(59, 199, 245, 0.08) 100%);
+  border: 1px solid rgba(79, 255, 167, 0.4);
+  box-shadow: 
+    0 0 20px rgba(79, 255, 167, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Icon within button */
+.sidebar-nav-btn__icon {
+  width: 1.5rem; /* 24px */
+  height: 1.5rem;
+  transition: all var(--transition-normal);
+  stroke-width: 1.5;
+}
+
+/* Inactive icon color */
+.sidebar-nav-btn__icon--inactive {
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+}
+
+/* Icon hover effect */
+.sidebar-nav-btn:hover .sidebar-nav-btn__icon--inactive {
+  color: var(--color-accent-secondary);
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Active icon styling */
+.sidebar-nav-btn__icon--active {
+  color: var(--color-accent-primary);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px rgba(79, 255, 167, 0.4));
+}
+
+/* Active indicator bar */
+.sidebar-nav-btn__indicator {
+  position: absolute;
+  right: -1px;
+  width: 0.25rem; /* 4px */
+  height: 2rem; /* 32px */
+  background-color: var(--color-accent-primary);
+  border-top-left-radius: var(--radius-full);
+  border-bottom-left-radius: var(--radius-full);
+  box-shadow: 0 0 10px rgba(79, 255, 167, 0.6);
+}

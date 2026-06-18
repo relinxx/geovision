@@ -1,0 +1,247 @@
+/**
+ * GeoVision Shared Utilities
+ * ==========================
+ * Reusable utility classes that are commonly used across multiple components.
+ * These complement Tailwind by providing semantic, component-specific patterns.
+ * 
+ * Import alongside tokens.css in component stylesheets.
+ */
+
+@import './tokens.css';
+
+/* ========================================
+   Card & Panel Styles
+   ======================================== */
+
+/* Base card style - used for panels, containers, and elevated surfaces */
+.card {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+}
+
+/* Card with gradient background */
+.card-gradient {
+  background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-primary) 100%);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+}
+
+/* Elevated card with shadow */
+.card-elevated {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ========================================
+   Section Headers
+   ======================================== */
+
+.section-header {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-primary);
+}
+
+.section-header-secondary {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-secondary);
+}
+
+.section-header-warning {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-warning);
+}
+
+/* ========================================
+   Form Elements
+   ======================================== */
+
+/* Standard input styling */
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent-secondary);
+}
+
+/* Standard button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Accent button */
+.btn-accent {
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  color: var(--color-bg-primary);
+  border: none;
+}
+
+/* Secondary button */
+.btn-secondary {
+  background-color: rgba(59, 199, 245, 0.1);
+  border: 1px solid rgba(59, 199, 245, 0.3);
+  color: var(--color-accent-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(59, 199, 245, 0.2);
+}
+
+/* Success button */
+.btn-success {
+  background-color: rgba(79, 255, 167, 0.1);
+  border: 1px solid rgba(79, 255, 167, 0.3);
+  color: var(--color-accent-primary);
+}
+
+.btn-success:hover {
+  background-color: rgba(79, 255, 167, 0.2);
+}
+
+/* ========================================
+   Status Indicators
+   ======================================== */
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.status-dot-success {
+  background-color: var(--color-accent-primary);
+}
+
+.status-dot-info {
+  background-color: var(--color-accent-secondary);
+}
+
+.status-dot-warning {
+  background-color: var(--color-accent-warning);
+}
+
+/* ========================================
+   Risk Level Indicators
+   ======================================== */
+
+.risk-low {
+  color: var(--color-risk-low);
+  background-color: rgba(74, 222, 128, 0.2);
+}
+
+.risk-moderate {
+  color: var(--color-risk-moderate);
+  background-color: rgba(74, 222, 128, 0.2);
+}
+
+.risk-elevated {
+  color: var(--color-risk-elevated);
+  background-color: rgba(234, 179, 8, 0.2);
+}
+
+.risk-high {
+  color: var(--color-risk-high);
+  background-color: rgba(249, 115, 22, 0.2);
+}
+
+.risk-critical {
+  color: var(--color-risk-critical);
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+/* ========================================
+   Map Container Styles
+   ======================================== */
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background-color: var(--color-bg-secondary);
+}
+
+/* ========================================
+   Sidebar Styles
+   ======================================== */
+
+.sidebar {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+  overflow-y: auto;
+}
+
+.sidebar-left {
+  composes: sidebar;
+  border-right-width: 1px;
+}
+
+.sidebar-right {
+  composes: sidebar;
+  border-left-width: 1px;
+}
+
+/* ========================================
+   Stat Tiles / Metric Cards
+   ======================================== */
+
+.stat-tile {
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-primary) 100%);
+  border: 1px solid var(--color-border-primary);
+  padding: var(--space-4);
+}
+
+.stat-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-1);
+}
+
+.stat-value-accent {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent-primary);
+}
+
+.stat-value-secondary {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent-secondary);
+}

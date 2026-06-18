@@ -1,0 +1,111 @@
+/**
+ * SpatialMapLegend Styles
+ * ========================
+ * Map legend component showing layer visibility and color coding.
+ */
+
+@import '../../../styles/tokens.css';
+
+/* Legend container */
+.map-legend {
+  position: absolute;
+  pointer-events: none;
+  width: 230px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  background-color: rgba(5, 12, 24, 0.96);
+  padding: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+}
+
+.map-legend--top-right { top: var(--space-4); right: var(--space-4); }
+.map-legend--top-left { top: var(--space-4); left: var(--space-2); }
+.map-legend--bottom-right { bottom: var(--space-4); right: var(--space-4); }
+.map-legend--bottom-left { bottom: var(--space-4); left: var(--space-2); }
+
+.map-legend__title {
+  margin-bottom: var(--space-2);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-primary);
+}
+
+/* Legend sections */
+.legend-section {
+  margin-bottom: var(--space-2);
+}
+
+.legend-section:last-child {
+  margin-bottom: 0;
+}
+
+.legend-section--bordered {
+  border-top: 1px solid var(--color-border-primary);
+  padding-top: var(--space-2);
+}
+
+.legend-section__title {
+  margin-bottom: var(--space-1);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  opacity: 0.65;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 11px;
+  color: var(--color-text-primary);
+  opacity: 0.85;
+}
+
+/* Swatch styles */
+.swatch {
+  display: inline-block;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-primary);
+  flex-shrink: 0;
+}
+
+.swatch--fill {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.swatch--line {
+  width: 2rem;
+  height: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.swatch--line-inner {
+  display: block;
+  width: 100%;
+  border-top: 2px solid;
+}
+
+.swatch--line-inner--dashed {
+  border-top-style: dashed;
+}
+
+.swatch--gradient {
+  width: 2rem;
+  height: 0.75rem;
+  background: linear-gradient(to right, #dbeafe, #2563eb, #1e3a8a);
+}

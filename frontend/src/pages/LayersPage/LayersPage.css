@@ -1,0 +1,162 @@
+/**
+ * LayersPage Styles
+ * =================
+ * Page for exploring map layers with integrated zoning chat assistant.
+ * Features a split view with map on the left and chat on the right.
+ */
+
+@import '../../styles/tokens.css';
+@import '../../styles/design-system.css';
+
+/* Main page container */
+.layers-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Content wrapper with elevated card styling */
+.layers-page__content {
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  box-shadow: var(--shadow-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* Page header */
+.layers-page__header {
+  flex-shrink: 0;
+  padding: var(--space-4);
+  padding-bottom: 0;
+}
+
+.layers-page__title {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.layers-page__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Split view container */
+.layers-page__split-view {
+  flex: 1;
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Panel container (both map and chat) */
+.layers-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.layers-panel__header {
+  flex-shrink: 0;
+  margin-bottom: var(--space-2);
+}
+
+.layers-panel__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.layers-panel__title-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.layers-panel__title-dot--green {
+  background-color: var(--color-accent-primary);
+}
+
+.layers-panel__title-dot--cyan {
+  background-color: var(--color-accent-secondary);
+}
+
+.layers-panel__content {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background-color: var(--color-bg-secondary);
+}
+
+/* ============================================
+   RESPONSIVE MEDIA QUERIES
+   ============================================ */
+
+/* Mobile (≤ 640px) */
+@media (max-width: 640px) {
+  .layers-page__split-view {
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    overflow-y: auto;
+  }
+  
+  .layers-panel {
+    min-height: 300px;
+  }
+  
+  .layers-page__header {
+    padding: var(--space-3);
+  }
+  
+  .layers-page__title {
+    font-size: var(--font-size-base);
+  }
+  
+  .layers-page__description {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Tablet (641px - 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .layers-page__split-view {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+  
+  .layers-page__header {
+    padding: var(--space-3);
+  }
+}
+
+/* Desktop (≥ 1025px) */
+@media (min-width: 1025px) {
+  .layers-page__split-view {
+    gap: var(--space-4);
+  }
+}
+
+/* Large Desktop (≥ 1280px) */
+@media (min-width: 1280px) {
+  .layers-page__title {
+    font-size: var(--font-size-xl);
+  }
+}

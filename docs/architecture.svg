@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">GeoVision multi-agent architecture</title>
+  <desc id="desc">A map-based planning request is coordinated across environmental suitability, zoning retrieval, and spatial optimization agents before ranked plans return to the interface.</desc>
+  <defs>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M36 0H0V36" fill="none" stroke="#DDE8E1" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#1F6F50"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#F4F8F5"/>
+  <rect width="1200" height="720" fill="url(#grid)"/>
+  <path d="M0 555C220 470 330 655 550 555S880 455 1200 565V720H0Z" fill="#DFEEE5"/>
+  <g font-family="Arial, sans-serif">
+    <text x="62" y="72" fill="#12372A" font-size="32" font-weight="700">GeoVision</text>
+    <text x="62" y="108" fill="#527565" font-size="17">Multi-agent intelligence for land-use planning</text>
+
+    <rect x="62" y="160" width="230" height="132" rx="10" fill="#FFFFFF" stroke="#9DB9AA"/>
+    <text x="88" y="198" fill="#1F6F50" font-size="13" font-weight="700">PLANNING INTERFACE</text>
+    <text x="88" y="232" fill="#12372A" font-size="21" font-weight="700">Parcel selection</text>
+    <text x="88" y="261" fill="#527565" font-size="14">Map + constraints + goals</text>
+
+    <rect x="370" y="160" width="260" height="132" rx="10" fill="#12372A"/>
+    <text x="396" y="198" fill="#8DE0B8" font-size="13" font-weight="700">ORCHESTRATOR</text>
+    <text x="396" y="232" fill="#FFFFFF" font-size="21" font-weight="700">Async planning job</text>
+    <text x="396" y="261" fill="#CBE2D5" font-size="14">Stages · progress · merge</text>
+
+    <rect x="708" y="136" width="200" height="122" rx="10" fill="#FFF7ED" stroke="#FDBA74"/>
+    <text x="734" y="174" fill="#C2410C" font-size="13" font-weight="700">ENVIRONMENT</text>
+    <text x="734" y="207" fill="#12372A" font-size="19" font-weight="700">Suitability agent</text>
+    <text x="734" y="233" fill="#527565" font-size="13">XGBoost + GIS risk</text>
+
+    <rect x="938" y="136" width="200" height="122" rx="10" fill="#F5F3FF" stroke="#C4B5FD"/>
+    <text x="964" y="174" fill="#6D28D9" font-size="13" font-weight="700">ZONING</text>
+    <text x="964" y="207" fill="#12372A" font-size="19" font-weight="700">Evidence agent</text>
+    <text x="964" y="233" fill="#527565" font-size="13">ChromaDB + RAG</text>
+
+    <rect x="823" y="322" width="200" height="122" rx="10" fill="#EFF6FF" stroke="#93C5FD"/>
+    <text x="849" y="360" fill="#1D4ED8" font-size="13" font-weight="700">SPATIAL</text>
+    <text x="849" y="393" fill="#12372A" font-size="19" font-weight="700">Optimization agent</text>
+    <text x="849" y="419" fill="#527565" font-size="13">NSGA-II + geometry</text>
+
+    <rect x="370" y="472" width="260" height="132" rx="10" fill="#FFFFFF" stroke="#1F6F50" stroke-width="2"/>
+    <text x="396" y="510" fill="#1F6F50" font-size="13" font-weight="700">PLAN SYNTHESIS</text>
+    <text x="396" y="544" fill="#12372A" font-size="21" font-weight="700">Ranked alternatives</text>
+    <text x="396" y="573" fill="#527565" font-size="14">Assignments + trade-offs + evidence</text>
+
+    <rect x="62" y="472" width="230" height="132" rx="10" fill="#1F6F50"/>
+    <text x="88" y="510" fill="#D9F5E7" font-size="13" font-weight="700">MAP OUTPUT</text>
+    <text x="88" y="544" fill="#FFFFFF" font-size="21" font-weight="700">Explainable plan</text>
+    <text x="88" y="573" fill="#D9F5E7" font-size="14">Layers + scores + reports</text>
+  </g>
+
+  <g stroke="#1F6F50" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+    <path d="M292 226H356"/>
+    <path d="M630 205H694"/>
+    <path d="M630 226C760 226 790 197 924 197"/>
+    <path d="M630 248C730 248 760 383 809 383"/>
+    <path d="M808 258C808 290 740 322 650 472"/>
+    <path d="M1038 258C1038 290 980 302 960 322"/>
+    <path d="M823 420C740 455 690 502 644 520"/>
+    <path d="M370 538H306"/>
+  </g>
+
+  <text x="62" y="674" fill="#527565" font-family="Arial, sans-serif" font-size="14">React + Leaflet/Deck.gl · FastAPI · XGBoost · ChromaDB · GeoPandas/Shapely · NSGA-II</text>
+</svg>

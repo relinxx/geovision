@@ -1,0 +1,468 @@
+--- a/backend/services/spatial_compatibility.py
++++ b/backend/services/spatial_compatibility.py
+@@ -276,6 +276,137 @@
+     return notes
+ 
+ 
++def explain_assignment_spatial_context(
++    parcel_id: str,
++    assignments: Mapping[str, Any] | Sequence[Mapping[str, Any]],
++    neighbor_pairs: Sequence[NeighborPair],
++    parcel_feature_lookup: Mapping[str, Mapping[str, Any]],
++    radius_m: float | None = None,
++) -> dict[str, Any]:
++    """Return local neighbour context for one parcel assignment.
++
++    The optimizer scores the whole plan, while this helper explains how the
++    clicked parcel relates to its nearby assigned neighbours.
++    """
++    resolved_parcel_id = str(parcel_id or "").strip()
++    assignment_lookup = _coerce_assignment_lookup(assignments)
++    assigned_use = normalize_land_use(assignment_lookup.get(resolved_parcel_id))
++
++    local_pairs = [
++        pair
++        for pair in neighbor_pairs
++        if pair[0] == resolved_parcel_id or pair[1] == resolved_parcel_id
++    ]
++
++    nearby_use_counts = {
++        "residential": 0,
++        "commercial": 0,
++        "industrial": 0,
++        "green": 0,
++        "unknown": 0,
++    }
++    closest_neighbors: list[dict[str, Any]] = []
++    reasons: list[str] = []
++    warnings: list[str] = []
++
++    compatible_pairs = 0
++    conflict_pairs = 0
++    green_buffer_pairs = 0
++    industrial_residential_conflicts = 0
++
++    center_risk = _extract_feature_risk(parcel_feature_lookup.get(resolved_parcel_id))
++
++    for left_id, right_id, distance_m in local_pairs:
++        other_id = right_id if left_id == resolved_parcel_id else left_id
++        other_use = normalize_land_use(assignment_lookup.get(other_id))
++        nearby_use_counts[other_use] = nearby_use_counts.get(other_use, 0) + 1
++
++        pair_score = _compatibility_value(assigned_use, other_use)
++        other_risk = _extract_feature_risk(parcel_feature_lookup.get(other_id))
++        max_risk = max(center_risk, other_risk)
++
++        has_green = assigned_use == "green" or other_use == "green"
++        has_industrial = assigned_use == "industrial" or other_use == "industrial"
++        has_residential = assigned_use == "residential" or other_use == "residential"
++
++        if has_green and max_risk >= 0.6:
++            pair_score += 0.75
++            green_buffer_pairs += 1
++        if has_industrial and max_risk >= 0.6:
++            pair_score -= 0.4
++        if has_industrial and has_residential:
++            industrial_residential_conflicts += 1
++
++        if pair_score > 0.0:
++            compatible_pairs += 1
++        elif pair_score < 0.0:
++            conflict_pairs += 1
++
++        closest_neighbors.append(
++            {
++                "parcel_id": other_id,
++                "assigned_use": other_use,
++                "distance_m": round(float(distance_m), 1),
++                "compatibility_score": round(float(pair_score), 3),
++            }
++        )
++
++    closest_neighbors.sort(key=lambda item: item["distance_m"])
++
++    total_neighbors = len(local_pairs)
++    same_use_count = nearby_use_counts.get(assigned_use, 0) if assigned_use != "unknown" else 0
++
++    if total_neighbors <= 0:
++        reasons.append(
++            "No nearby assigned parcels were found within the spatial compatibility radius, so this assignment is not strongly influenced by local clustering."
++        )
++    else:
++        if same_use_count > 0:
++            label = assigned_use.replace("_", " ")
++            reasons.append(
++                f"Within the spatial compatibility radius, this parcel is near {same_use_count} other {label} assignment{'s' if same_use_count != 1 else ''}, which supports land-use clustering."
++            )
++
++        if green_buffer_pairs > 0:
++            reasons.append(
++                f"Nearby green/open-space relationships help buffer environmental risk in {green_buffer_pairs} local pair{'s' if green_buffer_pairs != 1 else ''}."
++            )
++
++        if assigned_use == "green" and center_risk >= 0.6:
++            reasons.append(
++                "This parcel has elevated environmental risk, so green assignment can support local buffering and lower-intensity use."
++            )
++
++        if industrial_residential_conflicts > 0:
++            warnings.append(
++                f"This parcel is involved in {industrial_residential_conflicts} industrial-residential proximity conflict{'s' if industrial_residential_conflicts != 1 else ''}; buffering or compatibility review is recommended."
++            )
++        elif conflict_pairs > 0:
++            warnings.append(
++                f"This parcel has {conflict_pairs} nearby land-use compatibility conflict{'s' if conflict_pairs != 1 else ''} within the selected radius."
++            )
++
++        if assigned_use == "industrial" and nearby_use_counts.get("green", 0) > 0:
++            warnings.append(
++                "Industrial assignment is close to green/open-space parcels, so environmental buffering and edge compatibility should be reviewed."
++            )
++
++    return {
++        "enabled": True,
++        "radius_m": radius_m,
++        "assigned_use": assigned_use,
++        "neighbor_pairs_evaluated": total_neighbors,
++        "compatible_pairs": compatible_pairs,
++        "conflict_pairs": conflict_pairs,
++        "green_buffer_pairs": green_buffer_pairs,
++        "industrial_residential_conflicts": industrial_residential_conflicts,
++        "nearby_use_counts": nearby_use_counts,
++        "closest_neighbors": closest_neighbors[:5],
++        "reasons": reasons,
++        "warnings": warnings,
++    }
++
++
+ def make_spatial_compatibility_objective(
+     neighbor_pairs: Sequence[NeighborPair],
+     parcel_feature_lookup: Mapping[str, Mapping[str, Any]],
+--- a/backend/services/assignment_explainer.py
++++ b/backend/services/assignment_explainer.py
+@@ -109,6 +109,7 @@
+     parcel_properties: Mapping[str, Any],
+     assigned_use: str,
+     target_mix: Mapping[str, float] | None = None,
++    spatial_context: Mapping[str, Any] | None = None,
+ ) -> Dict[str, Any]:
+     """
+     Explain why a parcel received a specific land-use assignment.
+@@ -390,7 +391,20 @@
+         )
+ 
+     # ------------------------------------------------------------------
+-    # 8. Build an honest headline
++    # 8. Spatial compatibility / neighbour-aware explanation
++    # ------------------------------------------------------------------
++    spatial_summary: Dict[str, Any] | None = None
++    if isinstance(spatial_context, Mapping) and spatial_context:
++        spatial_summary = dict(spatial_context)
++
++        for reason in spatial_summary.get("reasons") or []:
++            _append_unique(reasons, str(reason))
++
++        for warning in spatial_summary.get("warnings") or []:
++            _append_unique(warnings, str(warning))
++
++    # ------------------------------------------------------------------
++    # 9. Build an honest headline
+     # ------------------------------------------------------------------
+     headline_reasons: list[str] = []
+ 
+@@ -410,6 +424,12 @@
+         assigned_score < 0.40 or assigned != best_suitability_use
+     ):
+         headline_reasons.append("the scenario needs this land-use category to meet the target mix")
++
++    if spatial_summary and int(spatial_summary.get("neighbor_pairs_evaluated") or 0) > 0:
++        if int(spatial_summary.get("conflict_pairs") or 0) > 0:
++            headline_reasons.append("nearby land-use compatibility creates a review concern")
++        elif int(spatial_summary.get("compatible_pairs") or 0) > 0:
++            headline_reasons.append("nearby assignments support spatial compatibility")
+ 
+     if assigned_score < 0.30 and assigned != best_suitability_use:
+         headline = (
+--- a/backend/main.py
++++ b/backend/main.py
+@@ -80,6 +80,7 @@
+ from services.spatial_compatibility import (
+     build_neighbor_pairs,
+     build_parcel_feature_lookup,
++    explain_assignment_spatial_context,
+     explain_spatial_compatibility,
+     make_spatial_compatibility_objective,
+     score_spatial_compatibility,
+@@ -628,6 +629,24 @@
+     parcel_properties: Dict[str, Any]
+     assigned_use: Literal["residential", "commercial", "industrial", "green"]
+     target_mix: Dict[str, float] = Field(default_factory=dict)
++    use_spatial_compatibility: bool = Field(
++        False,
++        description="When true, include neighbour-aware context in the assignment explanation.",
++    )
++    spatial_neighbor_radius_m: float = Field(
++        250,
++        gt=0,
++        le=5000,
++        description="Neighbour radius used to explain local spatial compatibility.",
++    )
++    plan_assignments: List[Dict[str, Any]] = Field(
++        default_factory=list,
++        description="Assignments for the selected generated plan.",
++    )
++    plan_parcels: List[GeoJSONFeature] = Field(
++        default_factory=list,
++        description="GeoJSON features for parcels in the selected generated plan.",
++    )
+ 
+ 
+ @app.get("/health", tags=["system"])
+@@ -1410,10 +1429,39 @@
+                     resolved_parcel_id = candidate
+                     break
+ 
++        spatial_context = None
++        if (
++            body.use_spatial_compatibility
++            and resolved_parcel_id
++            and body.plan_assignments
++            and body.plan_parcels
++        ):
++            plan_parcel_dicts = _parcels_as_dicts(body.plan_parcels)
++            parcel_feature_lookup = build_parcel_feature_lookup(plan_parcel_dicts)
++            plan_parcel_ids = [
++                str(item.get("parcel_id") or item.get("parcelId") or item.get("APN") or "").strip()
++                for item in body.plan_assignments
++            ]
++            plan_parcel_ids = [parcel_id for parcel_id in plan_parcel_ids if parcel_id]
++
++            neighbor_pairs = build_neighbor_pairs(
++                plan_parcel_ids or list(parcel_feature_lookup.keys()),
++                parcel_feature_lookup,
++                body.spatial_neighbor_radius_m,
++            )
++            spatial_context = explain_assignment_spatial_context(
++                parcel_id=resolved_parcel_id,
++                assignments=body.plan_assignments,
++                neighbor_pairs=neighbor_pairs,
++                parcel_feature_lookup=parcel_feature_lookup,
++                radius_m=body.spatial_neighbor_radius_m,
++            )
++
+         explanation = explain_assignment(
+             parcel_properties=body.parcel_properties,
+             assigned_use=body.assigned_use,
+             target_mix=body.target_mix,
++            spatial_context=spatial_context,
+         )
+         return {
+             "parcel_id": resolved_parcel_id,
+--- a/backend/tests/test_assignment_explainer.py
++++ b/backend/tests/test_assignment_explainer.py
+@@ -222,3 +222,65 @@
+ 
+ if __name__ == "__main__":
+     unittest.main()
++
++    def test_spatial_explain_assignment_includes_neighbour_context_when_supplied(self) -> None:
++        def feature(parcel_id: str, lon: float, lat: float, risk: float) -> dict:
++            delta = 0.0001
++            return {
++                "type": "Feature",
++                "id": parcel_id,
++                "geometry": {
++                    "type": "Polygon",
++                    "coordinates": [
++                        [
++                            [lon - delta, lat - delta],
++                            [lon + delta, lat - delta],
++                            [lon + delta, lat + delta],
++                            [lon - delta, lat + delta],
++                            [lon - delta, lat - delta],
++                        ]
++                    ],
++                },
++                "properties": {
++                    "APN": parcel_id,
++                    "centroid": {"x": lon, "y": lat},
++                    "environmental_risk": risk,
++                    "residential": 0.8 if parcel_id == "parcel-2" else 0.2,
++                    "commercial": 0.2,
++                    "industrial": 0.7 if parcel_id == "parcel-1" else 0.1,
++                    "green": 0.2,
++                },
++            }
++
++        payload = spatial_explain_assignment(
++            ExplainAssignmentRequest(
++                parcel_id="parcel-1",
++                assigned_use=cast(str, "industrial"),
++                target_mix={"industrial": 0.2, "residential": 0.8},
++                parcel_properties={
++                    "APN": "parcel-1",
++                    "residential": 0.2,
++                    "commercial": 0.2,
++                    "industrial": 0.7,
++                    "green": 0.2,
++                    "environmental_risk": 0.2,
++                },
++                use_spatial_compatibility=True,
++                spatial_neighbor_radius_m=250,
++                plan_assignments=[
++                    {"parcel_id": "parcel-1", "use_label": "industrial"},
++                    {"parcel_id": "parcel-2", "use_label": "residential"},
++                ],
++                plan_parcels=[
++                    feature("parcel-1", -117.0, 32.0, 0.2),
++                    feature("parcel-2", -117.0005, 32.0, 0.2),
++                ],
++            )
++        )
++
++        self.assertIsNotNone(payload["spatial_context"])
++        self.assertEqual(payload["spatial_context"]["neighbor_pairs_evaluated"], 1)
++        self.assertEqual(payload["spatial_context"]["industrial_residential_conflicts"], 1)
++        joined_warnings = " ".join(payload["warnings"]).lower()
++        self.assertIn("industrial-residential proximity", joined_warnings)
++
+--- a/frontend/src/types/index.ts
++++ b/frontend/src/types/index.ts
+@@ -65,6 +65,26 @@
+   allowed_uses: string[];
+ }
+ 
++export interface SpatialAssignmentSpatialContext {
++  enabled?: boolean;
++  radius_m?: number | null;
++  assigned_use?: LandUseAssignment | 'unknown';
++  neighbor_pairs_evaluated: number;
++  compatible_pairs: number;
++  conflict_pairs: number;
++  green_buffer_pairs: number;
++  industrial_residential_conflicts: number;
++  nearby_use_counts: Record<string, number>;
++  closest_neighbors?: Array<{
++    parcel_id: string;
++    assigned_use: LandUseAssignment | 'unknown';
++    distance_m: number;
++    compatibility_score: number;
++  }>;
++  reasons?: string[];
++  warnings?: string[];
++}
++
+ export interface SpatialAssignmentExplanation {
+   parcel_id: string | null;
+   assigned_use: LandUseAssignment;
+@@ -74,6 +94,7 @@
+   risk_level: 'low' | 'moderate' | 'high' | 'unknown';
+   best_suitability_use: LandUseAssignment;
+   scores: SpatialAssignmentExplanationScores;
++  spatial_context?: SpatialAssignmentSpatialContext | null;
+ }
+ 
+ export interface ExplainSpatialAssignmentRequest {
+@@ -81,6 +102,10 @@
+   parcel_properties: Record<string, any>;
+   assigned_use: LandUseAssignment;
+   target_mix?: Partial<LandUseMixTargets>;
++  use_spatial_compatibility?: boolean;
++  spatial_neighbor_radius_m?: number;
++  plan_assignments?: Array<{ parcel_id: string; use_label: LandUseAssignment | string }>;
++  plan_parcels?: any[];
+ }
+ 
+ export interface NearbyParcelsRequest {
+--- a/frontend/src/pages/PlanGalleryPage/PlanGalleryPage.tsx
++++ b/frontend/src/pages/PlanGalleryPage/PlanGalleryPage.tsx
+@@ -788,12 +788,35 @@
+       const parcelProperties =
+         properties ?? feature?.properties ?? loadedFeature?.properties ?? {};
+ 
++      const includeSpatialContext = Boolean(
++        latestOptimization?.settings?.use_spatial_compatibility && selectedPlan
++      );
++      const planAssignmentsForExplanation =
++        selectedPlan?.assignments.map((assignment) => ({
++          parcel_id: assignment.parcel_id,
++          use_label: assignment.use_label,
++        })) ?? [];
++      const planParcelsForExplanation = includeSpatialContext
++        ? planAssignmentsForExplanation
++            .map((assignment) => loadedFeatureById.get(assignment.parcel_id))
++            .filter(Boolean)
++        : [];
++
+       void apiClient
+         .explainSpatialAssignment({
+           parcel_id: apn,
+           parcel_properties: parcelProperties,
+           assigned_use: assignedUse,
+           target_mix: latestOptimization?.settings?.target_mix ?? {},
++          ...(includeSpatialContext
++            ? {
++                use_spatial_compatibility: true,
++                spatial_neighbor_radius_m:
++                  latestOptimization?.settings?.spatial_neighbor_radius_m ?? 250,
++                plan_assignments: planAssignmentsForExplanation,
++                plan_parcels: planParcelsForExplanation,
++              }
++            : {}),
+         })
+         .then((result) => {
+           if (assignmentRequestIdRef.current !== nextRequestId) return;
+@@ -814,7 +837,14 @@
+           setIsLoadingAssignmentExplanation(false);
+         });
+     },
+-    [latestOptimization?.settings?.target_mix, loadedFeatureById, selectedPlanAssignments]
++    [
++      latestOptimization?.settings?.spatial_neighbor_radius_m,
++      latestOptimization?.settings?.target_mix,
++      latestOptimization?.settings?.use_spatial_compatibility,
++      loadedFeatureById,
++      selectedPlan,
++      selectedPlanAssignments,
++    ]
+   );
+ 
+   // Load plan overlay layers
+@@ -1712,6 +1742,37 @@
+                       </strong>
+                     </div>
+                   </div>
++
++                  {assignmentExplanation.spatial_context && (
++                    <div className="plan-assignment-explanation__details">
++                      <div className="plan-assignment-explanation__details-title">
++                        Spatial Context
++                      </div>
++                      <ul>
++                        <li>
++                          Nearby pairs checked:{' '}
++                          {assignmentExplanation.spatial_context.neighbor_pairs_evaluated}
++                        </li>
++                        <li>
++                          Compatible pairs:{' '}
++                          {assignmentExplanation.spatial_context.compatible_pairs}
++                        </li>
++                        <li>
++                          Conflict pairs: {assignmentExplanation.spatial_context.conflict_pairs}
++                        </li>
++                        {assignmentExplanation.spatial_context.industrial_residential_conflicts > 0 && (
++                          <li>
++                            Industrial-residential conflicts:{' '}
++                            {
++                              assignmentExplanation.spatial_context
++                                .industrial_residential_conflicts
++                            }
++                          </li>
++                        )}
++                      </ul>
++                    </div>
++                  )}
++
+                   {assignmentExplanation.reasons.length > 0 && (
+                     <div className="plan-assignment-explanation__details">
+                       <div className="plan-assignment-explanation__details-title">Reasons</div>

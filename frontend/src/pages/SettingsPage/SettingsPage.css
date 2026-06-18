@@ -1,0 +1,342 @@
+/**
+ * SettingsPage Styles
+ * ===================
+ * User preferences and application settings page.
+ * Uses the GeoVision Design System for consistency.
+ */
+
+@import '../../styles/tokens.css';
+@import '../../styles/design-system.css';
+
+/* Main page container */
+.settings-page {
+  flex: 1;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+/* Page header card */
+.settings-header {
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.settings-header__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.settings-header__title-group {
+  flex: 1;
+}
+
+.settings-header__title {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.settings-header__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Reset button - extends design system button */
+.reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(59, 199, 245, 0.35);
+  background: rgba(59, 199, 245, 0.08);
+  color: var(--color-accent-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.reset-btn:hover {
+  background: rgba(59, 199, 245, 0.16);
+  border-color: rgba(59, 199, 245, 0.5);
+}
+
+.reset-btn__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Settings grid - responsive */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .settings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Settings section card */
+.settings-section {
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  padding: var(--space-4);
+  text-align: left;
+}
+
+/* Force checkbox alignment to left in settings sections */
+.settings-section .form-field--checkbox {
+  justify-content: flex-start !important;
+  align-items: center !important;
+  flex-direction: row !important;
+}
+
+.settings-section .form-field--checkbox input[type="checkbox"] {
+  order: -1;
+  margin: 0 !important;
+  margin-right: 0.75rem !important;
+  margin-left: 0 !important;
+  align-self: center;
+  flex-shrink: 0;
+  flex-grow: 0;
+  display: inline-block;
+}
+
+.settings-section .form-field--checkbox .form-field__label--inline {
+  flex: 1 1 auto;
+  text-align: left;
+  margin: 0;
+  align-self: center;
+}
+
+.settings-section--full-width {
+  grid-column: 1 / -1;
+}
+
+.settings-section__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-primary);
+  margin-bottom: var(--space-3);
+}
+
+.settings-section__title--cyan {
+  color: var(--color-accent-secondary);
+}
+
+.settings-section__title--orange {
+  color: var(--color-accent-warning);
+}
+
+.settings-section__description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+/* Form field */
+.form-field {
+  margin-bottom: var(--space-3);
+}
+
+.form-field:last-child {
+  margin-bottom: 0;
+}
+
+.form-field--inline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-secondary);
+  text-align: left;
+}
+
+.form-field__label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.form-field__label--inline {
+  margin-bottom: 0;
+}
+
+.form-field__input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.form-field__input:focus {
+  outline: none;
+  border-color: var(--color-accent-secondary);
+}
+
+.form-field__input--textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+/* Checkbox input styles */
+.form-field__checkbox {
+  accent-color: var(--color-accent-primary);
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  flex-grow: 0;
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: var(--space-3) !important;
+  padding: 0;
+  align-self: center;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.form-field__checkbox--cyan {
+  accent-color: var(--color-accent-secondary);
+}
+
+.form-field__checkbox--orange {
+  accent-color: var(--color-accent-warning);
+}
+
+/* Checkbox field - left aligned layout */
+.form-field--checkbox {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  flex-direction: row !important;
+}
+
+.form-field--checkbox:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Ensure checkbox is first and at the left */
+.form-field--checkbox .form-field__checkbox {
+  order: -1;
+  margin-left: 0 !important;
+  margin-right: 0.75rem !important;
+  align-self: center;
+}
+
+/* Label takes remaining space */
+.form-field--checkbox .form-field__label--inline {
+  flex: 1 1 auto;
+  text-align: left;
+  margin: 0;
+  align-self: center;
+}
+
+/* Fallback for browsers with :has() support */
+.form-field--inline:has(.form-field__checkbox) {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.form-field--inline:has(.form-field__checkbox):hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.form-field--inline:has(.form-field__checkbox) .form-field__checkbox {
+  order: -1;
+}
+
+/* Two-column form grid - responsive */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .form-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Info notice */
+.info-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.info-notice__icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--color-accent-primary);
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .settings-page {
+    padding: var(--space-3);
+  }
+  
+  .settings-header {
+    padding: var(--space-4);
+  }
+  
+  .settings-header__content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  
+  .settings-section {
+    padding: var(--space-3);
+  }
+  
+  .form-field--inline {
+    flex-wrap: wrap;
+  }
+  
+  .reset-btn {
+    width: 100%;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "lon": "Longitude",
+  "lat": "Latitude",
+  "soil_sand_pct": "SandContent",
+  "soil_clay_pct": "ClayContent",
+  "aqi_mean": "AirQualityIndex",
+  "impervious_mean": "ImperviousSurface"
+}
+
+

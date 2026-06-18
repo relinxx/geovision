@@ -1,0 +1,8 @@
+{
+  "source": "geovison/backend/outputs/spatial/befe7e73-4883-4a33-b029-9fb84ecad840/layouts",
+  "description": "Imported synthesized spatial layout layers from geovison folder.",
+  "plans": {
+    "plan_1": ["roads", "networks", "blocks", "green", "buildings", "plots", "density"],
+    "plan_2": ["roads", "networks", "blocks", "green", "buildings", "plots", "density"]
+  }
+}

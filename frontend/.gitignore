@@ -1,0 +1,11 @@
+.env
+.env.local
+.env.*.local
+.envrc
+
+node_modules/
+build/
+.vite/
+
+.vercel
+.env*.local

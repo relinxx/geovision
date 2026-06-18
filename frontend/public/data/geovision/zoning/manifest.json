@@ -1,0 +1,10 @@
+{
+  "source": "geovison/backend/agent/zoning_agent/src/data",
+  "description": "Imported zoning/reference map layers from geovison folder.",
+  "layers": {
+    "municipal_boundaries": "municipal_boundaries.geojson",
+    "zoning_base_sd": "zoning_base_sd.geojson",
+    "zoning_unincorporated": "zoning_unincorporated.geojson",
+    "general_plan_land_use_sd": "general_plan_land_use_sd.geojson"
+  }
+}

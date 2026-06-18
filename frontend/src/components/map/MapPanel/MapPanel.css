@@ -1,0 +1,26 @@
+/**
+ * MapPanel Styles
+ * ===============
+ * Map panel container with map display area.
+ */
+
+@import '../../../styles/tokens.css';
+
+/* Panel container */
+.map-panel {
+  flex: 1;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Map display area */
+.map-display {
+  flex: 1;
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+}

@@ -1,0 +1,159 @@
+/**
+ * RegisterPage Styles
+ * =====================
+ * User registration page matching the GeoVision theme.
+ * Uses the same design tokens and visual style as LoginPage.
+ */
+
+@import '../../styles/tokens.css';
+@import '../../styles/design-system.css';
+@import '../LoginPage/LoginPage.css';
+
+/* ============================================
+   FLUID RESPONSIVE LAYOUT OVERRIDES
+   ============================================ */
+
+/* Override fixed max-width for fluid layout */
+.login-content {
+  width: 100%;
+  max-width: none;
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+/* Fluid card that expands with screen size */
+.login-card {
+  width: 100%;
+  max-width: 480px;
+  min-width: 320px;
+}
+
+/* Mobile: Full width card */
+@media (max-width: 640px) {
+  .login-content {
+    padding: var(--space-4);
+  }
+  
+  .login-card {
+    max-width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Tablet: Slightly wider card */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .login-content {
+    padding: var(--space-6);
+  }
+  
+  .login-card {
+    max-width: 520px;
+  }
+}
+
+/* Desktop: Balanced wider card */
+@media (min-width: 1025px) {
+  .login-content {
+    padding: var(--space-8);
+  }
+  
+  .login-card {
+    max-width: 560px;
+  }
+}
+
+/* Large Desktop: Maximum comfortable width */
+@media (min-width: 1440px) {
+  .login-card {
+    max-width: 600px;
+    padding: var(--space-10);
+  }
+}
+
+/* ============================================
+   FORM FIELD RESPONSIVE IMPROVEMENTS
+   ============================================ */
+
+/* Desktop+: Two-column layout for username/email */
+@media (min-width: 1025px) {
+  .login-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4) var(--space-5);
+  }
+  
+  /* Full width elements */
+  .login-form .form-field:nth-child(1),
+  .login-form .form-field:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+  
+  /* Password fields side by side */
+  .login-form .form-field:nth-child(3),
+  .login-form .form-field:nth-child(4) {
+    grid-column: span 1;
+  }
+  
+  /* Submit button full width */
+  .login-submit-btn,
+  .login-footer,
+  .register-terms {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Large Desktop: Better spacing */
+@media (min-width: 1440px) {
+  .login-form {
+    gap: var(--space-5) var(--space-6);
+  }
+}
+
+/* Additional register-specific styles */
+.register-password-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-1);
+}
+
+.register-terms {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: var(--space-4);
+}
+
+.register-terms-link {
+  color: var(--color-accent-primary);
+  text-decoration: none;
+}
+
+.register-terms-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   ADDITIONAL RESPONSIVE MEDIA QUERIES
+   ============================================ */
+
+/* Mobile (≤ 640px) */
+@media (max-width: 640px) {
+  .register-password-hint {
+    font-size: 11px;
+  }
+  
+  .register-terms {
+    font-size: 11px;
+  }
+}
+
+/* Tablet (641px - 1024px): Single column maintained */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Single column layout, just wider card */
+}
+
+/* Desktop (≥ 1025px): Grid layout */
+@media (min-width: 1025px) {
+  /* Two-column grid for form fields */
+}
